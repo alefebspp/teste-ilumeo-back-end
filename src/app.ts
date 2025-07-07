@@ -16,6 +16,7 @@ import { fastifySwaggerUi } from "@fastify/swagger-ui";
 import AppError from "./errors/AppError";
 import authRoutes from "./routes/auth.routes";
 import { env } from "./config/env";
+import recordRoutes from "./routes/record.routes";
 
 const app = Fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -50,11 +51,12 @@ app.register(fastifyJwt, {
 app.register(fastifyCookie);
 
 app.register(cors, {
-  origin: "*",
+  origin: "http://localhost:5173",
   credentials: true,
 });
 
 app.register(authRoutes, { prefix: "/auth" });
+app.register(recordRoutes, { prefix: "/record" });
 
 app.setErrorHandler(function (error, request, reply) {
   console.log("ERROR:", error);

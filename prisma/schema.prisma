@@ -35,6 +35,4 @@ model Record {
 enum RecordType {
   start
   end
-  break
-  other
 }
