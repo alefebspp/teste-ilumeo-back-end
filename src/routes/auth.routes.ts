@@ -3,6 +3,7 @@ import z from "zod";
 import makeUserController from "@/module/auth/factories/auth-controller.factory";
 import { FastifyTypedInstance } from "@/types";
 import { loginSchema, registerSchema } from "@/module/auth/auth.schemas";
+import { verifyJWT } from "@/middleware/verify-jwt";
 
 export default async function authRoutes(app: FastifyTypedInstance) {
   const authController = makeUserController();
@@ -21,6 +22,30 @@ export default async function authRoutes(app: FastifyTypedInstance) {
       },
     },
     authController.register
+  );
+
+  app.get(
+    "/me",
+    {
+      onRequest: verifyJWT,
+      schema: {
+        operationId: "profile",
+        description: "Get user profile",
+        tags: ["Auth"],
+        response: {
+          200: z.object({
+            user: z.object({
+              id: z.string().uuid(),
+              name: z.string(),
+              email: z.string().email(),
+              createdAt: z.date(),
+              updatedAt: z.date(),
+            }),
+          }),
+        },
+      },
+    },
+    authController.getProfile
   );
 
   app.post(

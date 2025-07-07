@@ -3,6 +3,7 @@ import { addHours } from "date-fns";
 
 import UserRepository from "@/module/user/repository/user.repository";
 import {
+  makeGetProfileService,
   makeLoginService,
   makeRegisterService,
 } from "./factories/auth-services.factory";
@@ -10,6 +11,15 @@ import { registerSchema, loginSchema } from "./auth.schemas";
 
 export default function authController(userRepository: UserRepository) {
   return {
+    async getProfile(request: FastifyRequest, reply: FastifyReply) {
+      const userId = request.user.sign.sub;
+
+      const getProfileService = makeGetProfileService(userRepository);
+
+      const { user } = await getProfileService(userId);
+
+      return reply.status(200).send({ user });
+    },
     async register(request: FastifyRequest, reply: FastifyReply) {
       const body = registerSchema.parse(request.body);
 
