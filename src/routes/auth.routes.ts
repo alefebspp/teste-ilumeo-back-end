@@ -24,7 +24,7 @@ export default async function authRoutes(app: FastifyTypedInstance) {
   );
 
   app.post(
-    "/login",
+    "/sign-in",
     {
       schema: {
         operationId: "login",
