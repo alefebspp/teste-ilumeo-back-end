@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { addHours } from "date-fns";
+import { addHours, sub } from "date-fns";
 
 import UserRepository from "@/module/user/repository/user.repository";
 import {
@@ -11,6 +11,20 @@ import { registerSchema, loginSchema } from "./auth.schemas";
 
 export default function authController(userRepository: UserRepository) {
   return {
+    async logout(request: FastifyRequest, reply: FastifyReply) {
+      return reply
+        .setCookie("refreshToken", "", {
+          path: "/",
+          secure: false,
+          sameSite: true,
+          httpOnly: true,
+          expires: sub(new Date(), {
+            days: 7,
+          }),
+        })
+        .status(200)
+        .send({ message: "Sucesso" });
+    },
     async getProfile(request: FastifyRequest, reply: FastifyReply) {
       const userId = request.user.sign.sub;
 

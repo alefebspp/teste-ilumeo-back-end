@@ -24,6 +24,23 @@ export default async function authRoutes(app: FastifyTypedInstance) {
     authController.register
   );
 
+  app.post(
+    "/logout",
+    {
+      schema: {
+        operationId: "logout",
+        description: "Logoff user",
+        tags: ["Auth"],
+        response: {
+          200: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+    },
+    authController.logout
+  );
+
   app.get(
     "/me",
     {
