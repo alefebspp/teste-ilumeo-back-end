@@ -1,3 +1,5 @@
+import { toZonedTime, fromZonedTime, format } from "date-fns-tz";
+
 import AppError from "@/errors/AppError";
 import RecordRepository, {
   CreateRecordDTO,
@@ -44,5 +46,15 @@ export default async function createRecord(
     }
   }
 
-  await recordRepository.create(data);
+  const timeZone = "America/Sao_Paulo";
+
+  const zonedCreatedAt = toZonedTime(data.createdAt, timeZone);
+
+  const formatted = format(zonedCreatedAt, "yyyy-MM-dd HH:mm:ss", {
+    timeZone,
+  });
+
+  const createdAt = fromZonedTime(formatted, "UTC");
+
+  await recordRepository.create({ ...data, createdAt });
 }

@@ -1,9 +1,8 @@
 import z from "zod";
 
 export const createSchema = z.object({
-  userId: z.string(),
   type: z.enum(["start", "end"]),
-  createdAt: z.date(),
+  createdAt: z.coerce.date(),
 });
 
 export const findAllSchema = z.object({
