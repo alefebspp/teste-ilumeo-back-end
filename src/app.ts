@@ -51,7 +51,7 @@ app.register(fastifyJwt, {
 app.register(fastifyCookie);
 
 app.register(cors, {
-  origin: "http://localhost:5173",
+  origin: env.CLIENT_URL,
   credentials: true,
 });
 
