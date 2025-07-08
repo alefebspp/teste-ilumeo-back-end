@@ -60,7 +60,7 @@ export default function makePrismaRecordRepository(): RecordRepository {
         take: limit,
         skip: offset,
         where: { AND: andWhere },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: "asc" },
       });
 
       const total = await prisma.record.count({ where: { AND: andWhere } });

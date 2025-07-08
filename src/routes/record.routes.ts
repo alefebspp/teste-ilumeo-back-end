@@ -3,6 +3,7 @@ import z from "zod";
 import { FastifyTypedInstance } from "@/types";
 import { makeRecordController } from "@/module/record/factories/record-controller.factory";
 import { createSchema, findAllSchema } from "@/module/record/record.schemas";
+import { verifyJWT } from "@/middleware/verify-jwt";
 
 export default async function recordRoutes(app: FastifyTypedInstance) {
   const recordController = makeRecordController();
@@ -10,6 +11,7 @@ export default async function recordRoutes(app: FastifyTypedInstance) {
   app.post(
     "/",
     {
+      onRequest: verifyJWT,
       schema: {
         operationId: "create",
         description: "Create a new record",
@@ -26,6 +28,7 @@ export default async function recordRoutes(app: FastifyTypedInstance) {
   app.get(
     "/",
     {
+      onRequest: verifyJWT,
       schema: {
         operationId: "findAll",
         description: "List records with optional filters",
