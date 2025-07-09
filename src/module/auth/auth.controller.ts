@@ -10,13 +10,15 @@ import {
 import { registerSchema, loginSchema } from "./auth.schemas";
 
 export default function authController(userRepository: UserRepository) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   return {
     async logout(request: FastifyRequest, reply: FastifyReply) {
       return reply
         .setCookie("refreshToken", "", {
           path: "/",
-          secure: false,
-          sameSite: true,
+          secure: isProduction,
+          sameSite: isProduction ? "none" : true,
           httpOnly: true,
           expires: sub(new Date(), {
             days: 7,
@@ -72,8 +74,8 @@ export default function authController(userRepository: UserRepository) {
       return reply
         .setCookie("refreshToken", refreshToken, {
           path: "/",
-          secure: false,
-          sameSite: true,
+          secure: isProduction,
+          sameSite: isProduction ? "none" : true,
           httpOnly: true,
           expires: addHours(new Date(), 1),
         })
