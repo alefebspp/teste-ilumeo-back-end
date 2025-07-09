@@ -9,9 +9,19 @@ export default async function createRecord(
   recordRepository: RecordRepository,
   data: CreateRecordDTO
 ) {
+  const timeZone = "America/Sao_Paulo";
+
+  const zonedCreatedAt = toZonedTime(data.createdAt, timeZone);
+
+  const formatted = format(zonedCreatedAt, "yyyy-MM-dd HH:mm:ss", {
+    timeZone,
+  });
+
+  const createdAt = fromZonedTime(formatted, "UTC");
+
   const todayRecords = await recordRepository.getTodayRecords({
     userId: data.userId,
-    referenceDate: data.createdAt,
+    referenceDate: createdAt,
   });
   const typesToday = todayRecords.map((r) => r.type);
 
@@ -45,16 +55,6 @@ export default async function createRecord(
       throw new AppError(400, "Você já finalizou o expediente hoje.");
     }
   }
-
-  const timeZone = "America/Sao_Paulo";
-
-  const zonedCreatedAt = toZonedTime(data.createdAt, timeZone);
-
-  const formatted = format(zonedCreatedAt, "yyyy-MM-dd HH:mm:ss", {
-    timeZone,
-  });
-
-  const createdAt = fromZonedTime(formatted, "UTC");
 
   await recordRepository.create({ ...data, createdAt });
 }
