@@ -1,4 +1,4 @@
-import { endOfDay, startOfDay } from "date-fns";
+import { format } from "date-fns";
 import { Prisma } from "@prisma/client";
 
 import prisma from "@/config/prisma";
@@ -23,8 +23,8 @@ export default function makePrismaRecordRepository(): RecordRepository {
         where: {
           userId,
           createdAt: {
-            gte: startOfDay(referenceDate),
-            lte: endOfDay(referenceDate),
+            gte: `${format(referenceDate, "yyyy-MM-dd")}T00:00:00.000Z`,
+            lte: `${format(referenceDate, "yyyy-MM-dd")}T23:59:59.999Z`,
           },
         },
       });
